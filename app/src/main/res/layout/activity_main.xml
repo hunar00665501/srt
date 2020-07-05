@@ -7,6 +7,12 @@
     android:orientation="vertical"
     tools:context=".MainActivity">
 
+
+    <ListView
+        android:id="@+id/rlv"
+        android:layout_width="match_parent"
+        android:layout_height="291dp" />
+
     <Button
         android:id="@+id/readBtn"
         android:layout_width="match_parent"

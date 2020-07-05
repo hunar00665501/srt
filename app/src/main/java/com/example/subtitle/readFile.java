@@ -4,9 +4,11 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
@@ -18,6 +20,8 @@ import android.text.Editable;
 import android.text.InputType;
 import android.text.TextWatcher;
 import android.view.Gravity;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -25,6 +29,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.SearchView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -47,8 +52,10 @@ public class readFile extends AppCompatActivity {
     ListView lv;
     TextView tv;
     Button exportBtn;
+    String fileName;
     int vlad=0;
      int itemnum=0;
+     SearchView sv;
 
     static   String  m_Text="";
     ArrayAdapter<String> arrayAdapter;
@@ -57,7 +64,10 @@ public class readFile extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_read_file);
-        exportBtn= findViewById(R.id.exportBtb);
+        sv= findViewById(R.id.sch);
+
+
+
 
 
         arrayList=new ArrayList<>();
@@ -83,35 +93,22 @@ public class readFile extends AppCompatActivity {
 
 
 
-        exportBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                String s="";
-                for (int i=0;i<arrayList.size();i++){
-                       if (i%2!=0)
-                    s +=arrayList.get(i)+"\n\n";
-                }
+    Intent intent=getIntent();
+    String mod=intent.getStringExtra("mod");
 
-                try {
+if (mod.equals("new")){
+    myOpenImagePicker();
 
-                    File gpxfile = new File("/storage/emulated/0/", "a1.txt");
-                    FileWriter writer = new FileWriter(gpxfile);
-                    writer.append(s);
-                    writer.flush();
-                    writer.close();
-
-                } catch (Exception e) { Toast.makeText(readFile.this, e.getMessage(), Toast.LENGTH_LONG).show();}
-
-
-
-            }
-        });
+}else if (mod.equals("rec")){
+    String fn=intent.getStringExtra("fn");
+    fileName=fn;
+    resend();
+}
 
 
 
 
 
-        myOpenImagePicker();
 
 
 
@@ -128,15 +125,14 @@ public class readFile extends AppCompatActivity {
                     AlertDialog.Builder builder = new AlertDialog.Builder(readFile.this);
                     builder.setTitle(DefultT);
 
-                   // final   TextView textView1=new TextView(readFile.this);
-                  //  textView1.setText(DefultT);
-                    // builder.setView(textView1);
 
                     final EditText input = new EditText(readFile.this);
-                    input.setHint("enydg");
+                    input.setHint("Write the Kurdish translation here.");
                     input.setSingleLine(false);
                     input.setLines(2);
                     input.setGravity(Gravity.RIGHT);
+                    if (!selectedFromList.equals("Write the Kurdish translation here."))
+                        input.setText(selectedFromList);
                     builder.setView(input);
 
 
@@ -168,7 +164,6 @@ public class readFile extends AppCompatActivity {
                                         vlad=1;
                                     }
                                 }
-
 
 
 
@@ -225,11 +220,106 @@ public class readFile extends AppCompatActivity {
     }
 
 
+    private void export(){
+        String s="";
+        int end=arrayList.size()-1;
+        for (int i=0;i<arrayList.size();i++){
+
+
+            if (arrayList.get(i).equals("Write the Kurdish translation here.")){
+                lv.smoothScrollToPosition(i);
+                return;
+            }
+
+            if (i==end && i%2!=0){
+                s +=arrayList.get(i);
+
+                break;
+            }
+            if (i%2!=0)
+                s +=arrayList.get(i)+"\n\n";
+        }
+
+        try {
+
+            File gpxfile = new File("/storage/emulated/0/Export",fileName);
+            FileWriter writer = new FileWriter(gpxfile);
+            writer.append(s);
+            writer.flush();
+            writer.close();
+            Toast.makeText(readFile.this, "Exported From Storage", Toast.LENGTH_LONG).show();
+        } catch (Exception e) { Toast.makeText(readFile.this, e.getMessage(), Toast.LENGTH_LONG).show();}
+
+
+
+    }
 
 
 
 
 
+    @Override
+    public void onBackPressed() {
+        Toast.makeText(readFile.this,"col",Toast.LENGTH_LONG).show();
+
+        super.onBackPressed();
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+
+        menu.add(0,1,1,"Go to");
+        menu.add(0,2,2,"Save");
+        menu.add(0,3,3,"Export");
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+
+        if (item.getItemId()==1){
+
+            AlertDialog.Builder builder = new AlertDialog.Builder(readFile.this);
+            builder.setTitle("Search");
+
+
+            final EditText input = new EditText(readFile.this);
+            input.setHint("Search by Number");
+            input.setSingleLine(true);
+           // input.setInputType();
+           // input.setGravity(Gravity.RIGHT);
+             builder.setView(input);
+
+
+            builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    int num=Integer.parseInt(input.getText().toString());
+
+                    lv.smoothScrollToPosition(num);
+
+                }
+            });
+            builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    dialog.cancel();
+                }
+            });
+
+            builder.show();
+
+        }
+
+       else if (item.getItemId()==2){
+            save();
+        }
+        else if (item.getItemId()==3){
+            export();
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
 
     public void myOpenImagePicker() {
 
@@ -260,26 +350,107 @@ public class readFile extends AppCompatActivity {
 
                 Uri uri=data.getData();
                 String  path=uri.getPath();
+                Context context=getApplicationContext();
+
+
+
+
                 path=path.substring(path.indexOf(":")+1);
-              //  Toast.makeText(readFile.this,,Toast.LENGTH_LONG).show();
+                File f = new File(path);
+                fileName = f.getName();
+
+                Toast.makeText(readFile.this,fileName,Toast.LENGTH_LONG).show();
                 readFile1(path);
 
 
             }
 
 
+        }else {
+            Intent intent=new Intent(readFile.this,MainActivity.class);
+            startActivity(intent);
         }
 
     }
 
 
 
-    public boolean isFilePresent(String fileName) {
+private void resend(){
 
-        File file = new File(Environment.getExternalStorageDirectory(),fileName);
-        return file.exists();
+    File sdcard = new File(readFile.this.getFilesDir()+"/recent/");
+    File file = new File(sdcard,fileName);
+
+    StringBuilder text = new StringBuilder();
+    try {
+        BufferedReader br = new BufferedReader(new FileReader(file));
+        String line;
+
+
+        int c=0;
+        int whileCount=0;
+        while ((line = br.readLine()) != null) {
+            whileCount++;
+            if (c==1 && !line.equals("")){
+                String oldStr= arrayList.get(whileCount-2);
+                arrayList.set(whileCount-2,oldStr+"\n"+line);
+
+            }
+
+            if (line.equals("")) {
+                c=0;
+                continue;
+
+            }else
+                c++;
+
+            arrayList.add(line);
+
+
+        }
+        //  tv.setText(line2);
+        lv.setAdapter(arrayAdapter);
+        br.close();
+    }
+    catch (IOException e) {
+        Toast.makeText(readFile.this,e.getMessage(),Toast.LENGTH_LONG).show();
+
     }
 
+
+
+
+}
+
+
+
+    private void save(){
+
+
+
+        String s="";
+        int end=arrayList.size()-1;
+        for (int i=0;i<arrayList.size();i++){
+
+            if (i==end ){
+                s +=arrayList.get(i);
+                break;
+            }
+
+                s +=arrayList.get(i)+"\n\n";
+        }
+        try {
+
+            File gpxfile = new File(readFile.this.getFilesDir()+"/recent/",fileName);
+            FileWriter writer = new FileWriter(gpxfile);
+            writer.append(s);
+            writer.flush();
+            writer.close();
+            Toast.makeText(readFile.this, "Saved("+fileName+")", Toast.LENGTH_LONG).show();
+        } catch (Exception e) { Toast.makeText(readFile.this, e.getMessage(), Toast.LENGTH_LONG).show();}
+
+
+
+    }
 
 
 
@@ -298,8 +469,7 @@ public class readFile extends AppCompatActivity {
         try {
             BufferedReader br = new BufferedReader(new FileReader(file));
             String line;
-            String line2="";
-            String tmp="";
+
             ArrayList<String> arr;
             int c=0;
             int whileCount=0;
@@ -307,7 +477,6 @@ public class readFile extends AppCompatActivity {
                 whileCount++;
                 if (c==1 && !line.equals("")){
                    String oldStr= arrayList.get(whileCount-2);
-                    Toast.makeText(readFile.this,oldStr,Toast.LENGTH_LONG).show();
                     arrayList.set(whileCount-2,oldStr+"\n"+line);
 
                 }

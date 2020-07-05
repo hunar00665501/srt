@@ -1,5 +1,7 @@
 package com.example.subtitle;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
@@ -10,24 +12,95 @@ import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
+
+import java.io.File;
+import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
 
     private static final int PERMISSION_REQUEST_CODE = 1;
     Button readBtn;
+    ListView lv;
+    ArrayAdapter<String> arrayAdapter;
+    ArrayList<String> arrayList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+
+
+
+
+
+
+        File f=new File("/storage/emulated/0/Export");
+        if (!f.exists())
+        f.mkdir();
+
+
+        File file = new File(MainActivity.this.getFilesDir(), "recent");
+        if (!file.exists()) {
+            file.mkdir();
+        }
+
+
+
+        arrayList=new ArrayList<>();
+        arrayAdapter=new ArrayAdapter<String>(MainActivity.this,android.R.layout.simple_list_item_1,arrayList);
+
+        lv = (ListView) findViewById(R.id.rlv);
+
+
+
+
+
+
+        File folder = new File(MainActivity.this.getFilesDir()+"/recent");
+        File[] listOfFiles = folder.listFiles();
+
+        for (int i = 0; i < listOfFiles.length; i++) {
+            if (listOfFiles[i].isFile()) {
+                String  ff=listOfFiles[i].getName()+"";
+                arrayList.add(ff);
+
+            }
+        }
+      lv.setAdapter(arrayAdapter);
+
+
+     lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+         @Override
+         public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+
+             String selectedFromList = (String) lv.getItemAtPosition(i);
+            Intent intent=new Intent(MainActivity.this,readFile.class);
+            intent.putExtra("mod","rec");
+            intent.putExtra("fn",selectedFromList);
+            startActivity(intent);
+         }
+     });
+
+
+
+
+
+
+
         readBtn=findViewById(R.id.readBtn);
         readBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent intent =new Intent(MainActivity.this,readFile.class);
+                intent.putExtra("mod","new");
                 startActivity(intent);
             }
         });
