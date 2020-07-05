@@ -105,6 +105,7 @@ if (mod.equals("new")){
     resend();
 }
 
+        setTitle(fileName);
 
 
 
@@ -260,7 +261,8 @@ if (mod.equals("new")){
 
     @Override
     public void onBackPressed() {
-        Toast.makeText(readFile.this,"col",Toast.LENGTH_LONG).show();
+        save();
+        Toast.makeText(readFile.this,"auto saved",Toast.LENGTH_LONG).show();
 
         super.onBackPressed();
     }
