@@ -6,6 +6,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Build;
@@ -16,6 +18,7 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -74,7 +77,7 @@ public class MainActivity extends AppCompatActivity {
 
             }
         }
-      lv.setAdapter(arrayAdapter);
+
 
 
      lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -88,6 +91,68 @@ public class MainActivity extends AppCompatActivity {
             startActivity(intent);
          }
      });
+
+
+   lv.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+       @Override
+       public boolean onItemLongClick(AdapterView<?> adapterView, View view, int i, final long l) {
+
+           final String selectedFromList = (String) lv.getItemAtPosition(i);
+
+           AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+           builder.setTitle("Delete File");
+           builder.setMessage("Are you sure to delete ("+selectedFromList+")");
+
+
+
+           builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+               @Override
+               public void onClick(DialogInterface dialog, int which) {
+
+
+                   File file = new File(MainActivity.this.getFilesDir()+"/recent",selectedFromList);
+
+                   if(file.delete())
+                   {
+                       Intent intent = getIntent();
+                       finish();
+                       startActivity(intent);
+
+
+                   }
+                   else
+                   {
+                       Toast.makeText(MainActivity.this,"d'not delete",Toast.LENGTH_LONG).show();
+
+                   }
+
+
+
+
+               }
+           });
+           builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+               @Override
+               public void onClick(DialogInterface dialog, int which) {
+                   dialog.cancel();
+               }
+           });
+
+           builder.show();
+
+
+
+
+
+           return true;
+       }
+   });
+
+
+
+
+
+        lv.setAdapter(arrayAdapter);
 
 
 

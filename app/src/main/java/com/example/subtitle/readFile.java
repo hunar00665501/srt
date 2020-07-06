@@ -256,8 +256,17 @@ if (mod.equals("new")){
     }
 
 
+    @Override
+    protected void onPause() {
+        save();
+        super.onPause();
+    }
 
-
+    @Override
+    protected void onResume() {
+        save();
+        super.onResume();
+    }
 
     @Override
     public void onBackPressed() {
@@ -379,11 +388,13 @@ if (mod.equals("new")){
 
 private void resend(){
 
-    File sdcard = new File(readFile.this.getFilesDir()+"/recent/");
-    File file = new File(sdcard,fileName);
 
-    StringBuilder text = new StringBuilder();
     try {
+
+        File sdcard = new File(readFile.this.getFilesDir()+"/recent/");
+        File file = new File(sdcard,fileName);
+
+        StringBuilder text = new StringBuilder();
         BufferedReader br = new BufferedReader(new FileReader(file));
         String line;
 
@@ -393,11 +404,9 @@ private void resend(){
         while ((line = br.readLine()) != null) {
             whileCount++;
             if (c==1 && !line.equals("")){
-                String oldStr= arrayList.get(whileCount-2);
-                arrayList.set(whileCount-2,oldStr+"\n"+line);
-
+                String   oldStr= arrayList.get(whileCount-1);
+                arrayList.set(whileCount-1,oldStr+"\n"+line);
             }
-
             if (line.equals("")) {
                 c=0;
                 continue;
@@ -409,11 +418,14 @@ private void resend(){
 
 
         }
-        //  tv.setText(line2);
+
         lv.setAdapter(arrayAdapter);
         br.close();
     }
     catch (IOException e) {
+        Toast.makeText(readFile.this,e.getMessage(),Toast.LENGTH_LONG).show();
+
+    }  catch (Exception e) {
         Toast.makeText(readFile.this,e.getMessage(),Toast.LENGTH_LONG).show();
 
     }
@@ -440,7 +452,7 @@ private void resend(){
 
                 s +=arrayList.get(i)+"\n\n";
         }
-        try {
+             try {
 
             File gpxfile = new File(readFile.this.getFilesDir()+"/recent/",fileName);
             FileWriter writer = new FileWriter(gpxfile);
@@ -450,6 +462,15 @@ private void resend(){
             Toast.makeText(readFile.this, "Saved("+fileName+")", Toast.LENGTH_LONG).show();
         } catch (Exception e) { Toast.makeText(readFile.this, e.getMessage(), Toast.LENGTH_LONG).show();}
 
+        try {
+
+            File gpxfile2 = new File("/storage/emulated/0/b",fileName);
+            FileWriter writer2 = new FileWriter(gpxfile2);
+            writer2.append(s);
+            writer2.flush();
+            writer2.close();
+            Toast.makeText(readFile.this, "Saved("+fileName+")", Toast.LENGTH_LONG).show();
+        } catch (Exception e) { Toast.makeText(readFile.this, e.getMessage(), Toast.LENGTH_LONG).show();}
 
 
     }
