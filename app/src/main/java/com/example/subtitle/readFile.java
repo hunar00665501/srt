@@ -103,9 +103,10 @@ if (mod.equals("new")){
     String fn=intent.getStringExtra("fn");
     fileName=fn;
     resend();
+    setTitle(fileName);
 }
 
-        setTitle(fileName);
+
 
 
 
@@ -217,6 +218,35 @@ if (mod.equals("new")){
 
 
 
+        sv.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String s) {
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String s) {
+
+               String ss=sv.getQuery().toString();
+
+              // if (!ss.equals(""))
+                (readFile.this).arrayAdapter.getFilter().filter(ss);
+
+
+                return false;
+            }
+        });
+
+
+
+
+
+
+
+
+
+
+
 
     }
 
@@ -294,7 +324,7 @@ if (mod.equals("new")){
             builder.setTitle("Search");
 
 
-            final EditText input = new EditText(readFile.this);
+           final EditText input = new EditText(readFile.this);
             input.setHint("Search by Number");
             input.setSingleLine(true);
            // input.setInputType();
@@ -363,17 +393,11 @@ if (mod.equals("new")){
                 String  path=uri.getPath();
                 Context context=getApplicationContext();
 
-
-
-
                 path=path.substring(path.indexOf(":")+1);
                 File f = new File(path);
                 fileName = f.getName();
-
-                Toast.makeText(readFile.this,fileName,Toast.LENGTH_LONG).show();
+                setTitle(fileName);
                 readFile1(path);
-
-
             }
 
 
@@ -404,8 +428,8 @@ private void resend(){
         while ((line = br.readLine()) != null) {
             whileCount++;
             if (c==1 && !line.equals("")){
-                String   oldStr= arrayList.get(whileCount-1);
-                arrayList.set(whileCount-1,oldStr+"\n"+line);
+                String   oldStr= arrayList.get(whileCount);
+                arrayList.set(whileCount,oldStr+"\n"+line);
             }
             if (line.equals("")) {
                 c=0;
@@ -430,15 +454,11 @@ private void resend(){
 
     }
 
-
-
-
 }
 
 
 
     private void save(){
-
 
 
         String s="";
