@@ -19,6 +19,7 @@ import android.os.Environment;
 import android.text.Editable;
 import android.text.InputType;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -32,6 +33,8 @@ import android.widget.ListView;
 import android.widget.SearchView;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -48,7 +51,7 @@ import java.util.Arrays;
 public class readFile extends AppCompatActivity {
 
 
-      private static final int SELECT_FOLDER=43;
+    private static final int SELECT_FOLDER=43;
     ListView lv;
     TextView tv;
     Button exportBtn;
@@ -56,6 +59,10 @@ public class readFile extends AppCompatActivity {
     int vlad=0;
      int itemnum=0;
      SearchView sv;
+     FloatingActionButton fab;
+     TinyDB tinydb;
+
+
 
     static   String  m_Text="";
     ArrayAdapter<String> arrayAdapter;
@@ -65,8 +72,8 @@ public class readFile extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_read_file);
         sv= findViewById(R.id.sch);
-
-
+        fab=findViewById(R.id.fab);
+        tinydb = new TinyDB(this);
 
 
 
@@ -102,17 +109,9 @@ if (mod.equals("new")){
 }else if (mod.equals("rec")){
     String fn=intent.getStringExtra("fn");
     fileName=fn;
-    resend();
+
     setTitle(fileName);
 }
-
-
-
-
-
-
-
-
 
 
         lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -239,14 +238,13 @@ if (mod.equals("new")){
 
 
 
-
-
-
-
-
-
-
-
+    fab.setOnClickListener(new View.OnClickListener() {
+        @Override
+        public void onClick(View view) {
+            save();
+            Toast.makeText(readFile.this,"saved( "+fileName+" )",Toast.LENGTH_SHORT).show();
+        }
+    });
 
     }
 
@@ -289,14 +287,18 @@ if (mod.equals("new")){
     @Override
     protected void onPause() {
         save();
+        Toast.makeText(readFile.this,"auto saved",Toast.LENGTH_LONG).show();
+
         super.onPause();
     }
 
     @Override
     protected void onResume() {
         save();
+        Toast.makeText(readFile.this,"auto saved",Toast.LENGTH_LONG).show();
+
         super.onResume();
-    }
+}
 
     @Override
     public void onBackPressed() {
@@ -310,8 +312,7 @@ if (mod.equals("new")){
     public boolean onCreateOptionsMenu(Menu menu) {
 
         menu.add(0,1,1,"Go to");
-        menu.add(0,2,2,"Save");
-        menu.add(0,3,3,"Export");
+        menu.add(0,2,2,"Export");
         return super.onCreateOptionsMenu(menu);
     }
 
@@ -353,9 +354,6 @@ if (mod.equals("new")){
         }
 
        else if (item.getItemId()==2){
-            save();
-        }
-        else if (item.getItemId()==3){
             export();
         }
 
@@ -396,6 +394,8 @@ if (mod.equals("new")){
                 path=path.substring(path.indexOf(":")+1);
                 File f = new File(path);
                 fileName = f.getName();
+                Toast.makeText(readFile.this,fileName,Toast.LENGTH_LONG).show();
+
                 setTitle(fileName);
                 readFile1(path);
             }
@@ -410,89 +410,23 @@ if (mod.equals("new")){
 
 
 
-private void resend(){
+    void save(){
+        ArrayList<String>  al= tinydb.getListString("filenames");
+        if (al.isEmpty()) {
+            al = new ArrayList<>();
+        }
 
-
-    try {
-
-        File sdcard = new File(readFile.this.getFilesDir()+"/recent/");
-        File file = new File(sdcard,fileName);
-
-        StringBuilder text = new StringBuilder();
-        BufferedReader br = new BufferedReader(new FileReader(file));
-        String line;
-
-
-        int c=0;
-        int whileCount=0;
-        while ((line = br.readLine()) != null) {
-            whileCount++;
-            if (c==1 && !line.equals("")){
-                String   oldStr= arrayList.get(whileCount);
-                arrayList.set(whileCount,oldStr+"\n"+line);
-            }
-            if (line.equals("")) {
-                c=0;
-                continue;
-
-            }else
-                c++;
-
-            arrayList.add(line);
-
+        if(!al.contains(fileName)) {
+            al.add(fileName);
+            tinydb.putListString( "filenames" , al);
 
         }
 
-        lv.setAdapter(arrayAdapter);
-        br.close();
-    }
-    catch (IOException e) {
-        Toast.makeText(readFile.this,e.getMessage(),Toast.LENGTH_LONG).show();
-
-    }  catch (Exception e) {
-        Toast.makeText(readFile.this,e.getMessage(),Toast.LENGTH_LONG).show();
-
-    }
-
-}
 
 
+        tinydb.putListString(fileName , arrayList);
 
-    private void save(){
-
-
-        String s="";
-        int end=arrayList.size()-1;
-        for (int i=0;i<arrayList.size();i++){
-
-            if (i==end ){
-                s +=arrayList.get(i);
-                break;
-            }
-
-                s +=arrayList.get(i)+"\n\n";
-        }
-             try {
-
-            File gpxfile = new File(readFile.this.getFilesDir()+"/recent/",fileName);
-            FileWriter writer = new FileWriter(gpxfile);
-            writer.append(s);
-            writer.flush();
-            writer.close();
-            Toast.makeText(readFile.this, "Saved("+fileName+")", Toast.LENGTH_LONG).show();
-        } catch (Exception e) { Toast.makeText(readFile.this, e.getMessage(), Toast.LENGTH_LONG).show();}
-
-        try {
-
-            File gpxfile2 = new File("/storage/emulated/0/b",fileName);
-            FileWriter writer2 = new FileWriter(gpxfile2);
-            writer2.append(s);
-            writer2.flush();
-            writer2.close();
-            Toast.makeText(readFile.this, "Saved("+fileName+")", Toast.LENGTH_LONG).show();
-        } catch (Exception e) { Toast.makeText(readFile.this, e.getMessage(), Toast.LENGTH_LONG).show();}
-
-
+        Log.e("Save" , "Save");
     }
 
 

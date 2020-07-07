@@ -35,14 +35,20 @@ public class MainActivity extends AppCompatActivity {
     ListView lv;
     ArrayAdapter<String> arrayAdapter;
     ArrayList<String> arrayList;
+    TinyDB tinyDB;
 
 
+    @Override
+    protected void onPostResume() {
+        loadData();
+        super.onPostResume();
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
+        tinyDB = new TinyDB(this);
 
 
 
@@ -66,21 +72,19 @@ public class MainActivity extends AppCompatActivity {
 
         lv = (ListView) findViewById(R.id.rlv);
 
+        loadData();
 
 
 
 
 
-        File folder = new File(MainActivity.this.getFilesDir()+"/recent");
-        File[] listOfFiles = folder.listFiles();
 
-        for (int i = 0; i < listOfFiles.length; i++) {
-            if (listOfFiles[i].isFile()) {
-                String  ff=listOfFiles[i].getName()+"";
-                arrayList.add(ff);
 
-            }
-        }
+
+
+
+
+
 
 
 
@@ -228,12 +232,25 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
+    private void loadData() {
+
+
+        arrayList.clear();
+        arrayAdapter.clear();
+        arrayList.addAll(tinyDB.getListString("filenames"));
+        String toast = "";
+        for(String str:arrayList){
+
+            toast = " " + toast + str;
+        }
+        Log.e("Load" , toast);
 
 
 
+        lv.setAdapter(arrayAdapter);
 
 
-
+    }
 
 
 }
