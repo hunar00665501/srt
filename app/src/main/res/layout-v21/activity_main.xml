@@ -1,0 +1,172 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#3E4481"
+    android:orientation="vertical"
+    tools:context=".MainActivity">
+
+
+    <TextView
+        android:id="@+id/textView"
+        android:layout_width="165dp"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp"
+        android:layout_weight="0"
+
+        android:text="Recent files:"
+        android:textColor="#FFFFFF"
+        android:textSize="26dp"
+        android:textStyle="bold"
+        tools:ignore="MissingConstraints"
+        tools:layout_editor_absoluteX="0dp"
+        tools:layout_editor_absoluteY="16dp" />
+
+
+    <ListView
+
+        android:id="@+id/rlv"
+        android:layout_width="match_parent"
+        android:layout_height="182dp"
+        android:layout_gravity="center"
+        android:layout_margin="10dp"
+
+        android:layout_marginTop="0dp"
+
+        android:background="@drawable/listviewrounded"
+        tools:ignore="MissingConstraints"
+        tools:layout_editor_absoluteX="148dp"
+        tools:layout_editor_absoluteY="70dp">
+
+    </ListView>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp"
+        android:orientation="horizontal">
+
+
+        <Button
+            android:id="@+id/button8"
+            android:layout_width="85dp"
+            android:layout_height="146dp"
+            android:layout_margin="4dp"
+            android:layout_weight="1"
+            android:background="@drawable/roundbutton1"
+            android:text="Punctuation\nGuide"
+            android:textSize="12dp"
+            android:textColor="#FFFFFF"
+            tools:ignore="MissingConstraints"
+            tools:layout_editor_absoluteX="16dp"
+            tools:layout_editor_absoluteY="265dp"
+            android:icon="@drawable/about"/>
+
+        <Button
+            android:id="@+id/button7"
+            android:layout_width="85dp"
+            android:layout_height="146dp"
+            android:layout_margin="4dp"
+            android:layout_weight="1"
+            android:background="@drawable/roundbutton2"
+            android:text="Tutorials"
+            android:textColor="#FFFFFF"
+            tools:ignore="MissingConstraints"
+            tools:layout_editor_absoluteX="293dp"
+            tools:layout_editor_absoluteY="265dp" />
+
+        <Button
+            android:id="@+id/button9"
+            android:layout_width="85dp"
+            android:layout_height="146dp"
+            android:layout_margin="4dp"
+            android:layout_weight="1"
+            android:background="@drawable/roundbutton3"
+            android:text="Facebook"
+            android:textColor="#FFFFFF"
+            tools:ignore="MissingConstraints"
+            tools:layout_editor_absoluteX="161dp"
+            tools:layout_editor_absoluteY="265dp" />
+
+
+    </LinearLayout>
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp"
+        android:padding="2dp"
+        android:orientation="horizontal">
+
+
+        <Button
+            android:layout_width="85dp"
+            android:layout_height="146dp"
+            android:layout_margin="4dp"
+            android:layout_weight="1"
+            android:background="@drawable/roundbutton4"
+            android:textColor="#FFFFFF"
+            android:text="Problem?"
+            tools:ignore="MissingConstraints"
+            tools:layout_editor_absoluteX="16dp"
+            tools:layout_editor_absoluteY="265dp" />
+
+        <Button
+            android:layout_width="85dp"
+            android:layout_height="146dp"
+            android:layout_margin="4dp"
+            android:layout_weight="1"
+            android:background="@drawable/roundbutton5"
+            android:textColor="#FFFFFF"
+            android:text="About us"
+            tools:ignore="MissingConstraints"
+            tools:layout_editor_absoluteX="293dp"
+            tools:layout_editor_absoluteY="265dp" />
+
+        <Button
+            android:layout_width="85dp"
+            android:layout_height="146dp"
+            android:layout_margin="4dp"
+            android:layout_weight="1"
+            android:background="@drawable/roundbutton6"
+            android:textColor="#FFFFFF"
+            android:text="Fetch File"
+            tools:ignore="MissingConstraints"
+            tools:layout_editor_absoluteX="161dp"
+            tools:layout_editor_absoluteY="265dp" />
+
+
+    </LinearLayout>
+
+
+    <TextView
+        android:id="@+id/textView4"
+        android:layout_width="wrap_content"
+        android:layout_height="59dp"
+        android:layout_gravity="center"
+        android:layout_margin="0dp"
+        android:layout_weight="1"
+        android:text="Powered with ❤️ by Ayan Organization"
+        android:textColor="#FFFFFF"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        tools:ignore="MissingConstraints"
+        tools:layout_editor_absoluteX="0dp"
+        tools:layout_editor_absoluteY="16dp"/>
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/readBtn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|end"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="16dp"
+        android:clickable="true"
+        android:contentDescription="@string/submit"
+        android:src="@android:drawable/ic_menu_add"
+        app:backgroundTint="#DFE5EF" />
+
+</LinearLayout>

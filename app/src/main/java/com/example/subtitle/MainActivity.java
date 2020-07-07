@@ -20,16 +20,20 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
+
 import java.io.File;
 import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
 
     private static final int PERMISSION_REQUEST_CODE = 1;
-    Button readBtn;
+    FloatingActionButton readBtn;
     ListView lv;
     ArrayAdapter<String> arrayAdapter;
     ArrayList<String> arrayList;
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -93,9 +97,8 @@ public class MainActivity extends AppCompatActivity {
 
 
 
-
-
         readBtn=findViewById(R.id.readBtn);
+
         readBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
